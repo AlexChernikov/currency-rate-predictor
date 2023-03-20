@@ -1,0 +1,35 @@
+plugins {
+    id 'java'
+}
+
+group 'ru.digitalleague.philosophyit'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.1'
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    implementation 'com.opencsv:opencsv:5.7.1'
+}
+
+jar {
+
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+
+    manifest {
+        attributes "Main-Class": "ru.digitalleague.philosophyit.Main"
+    }
+
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
