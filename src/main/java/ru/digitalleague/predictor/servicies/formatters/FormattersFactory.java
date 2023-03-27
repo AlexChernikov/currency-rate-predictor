@@ -7,7 +7,7 @@ public class FormattersFactory {
     private FormattersFactory() {
     }
 
-    public static Formatter getCounter() {
+    public static Formatter getFormatter() {
         return new DefaultFormatterService();
     }
 }

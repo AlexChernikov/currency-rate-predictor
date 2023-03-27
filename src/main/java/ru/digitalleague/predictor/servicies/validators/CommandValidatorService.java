@@ -7,7 +7,7 @@ public class CommandValidatorService implements Validator {
     @Override
     public boolean validate(String command) throws CommandFormatException {
         if (!command.matches("rate [A-Z]{3} (.*)")) {
-            throw new CommandFormatException("Команда не разбирается. Попробуйте ещё раз.");
+            throw new CommandFormatException("Команда " + command + " не разбирается. Попробуйте ещё раз.");
         }
 
         return true;

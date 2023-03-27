@@ -12,7 +12,7 @@ import java.util.Locale;
 public class DefaultFormatterService implements Formatter {
 
     @Override
-    public String buildPredicate(List<BigDecimal> counts) {
+    public String buildPredication(List<BigDecimal> counts) {
         StringBuilder stringBuilder = new StringBuilder().append(System.getProperty("line.separator"));
 
         Calendar calendar = Calendar.getInstance();

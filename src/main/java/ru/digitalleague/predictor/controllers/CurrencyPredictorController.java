@@ -6,7 +6,11 @@ import ru.digitalleague.predictor.servicies.CurrencyPredictorService;
 
 public class CurrencyPredictorController {
 
-    private final CurrencyPredictorService currencyPredictorService = new CurrencyPredictorService();
+    private final CurrencyPredictorService currencyPredictorService;
+
+    public CurrencyPredictorController(CurrencyPredictorService currencyPredictorService) {
+        this.currencyPredictorService = currencyPredictorService;
+    }
 
     public String predicate(Currency currency, Period period) {
         return currencyPredictorService.predicate(currency, period);

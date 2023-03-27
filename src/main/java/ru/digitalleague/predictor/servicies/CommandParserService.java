@@ -1,6 +1,7 @@
 package ru.digitalleague.predictor.servicies;
 
 import lombok.extern.slf4j.Slf4j;
+import ru.digitalleague.predictor.entity.ValidationResult;
 import ru.digitalleague.predictor.enums.Currency;
 import ru.digitalleague.predictor.enums.Period;
 import ru.digitalleague.predictor.exceptions.CommandFormatException;
@@ -8,7 +9,6 @@ import ru.digitalleague.predictor.exceptions.UnexpectedCurrencyException;
 import ru.digitalleague.predictor.exceptions.UnexpectedPeriodException;
 import ru.digitalleague.predictor.interfaces.Validator;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -16,24 +16,25 @@ public class CommandParserService {
 
     private final List<Validator> validators;
 
-    public CommandParserService(Validator... validators) {
-        this.validators = Arrays.stream(validators).toList();
+    public CommandParserService(List<Validator> validators) {
+        this.validators = validators;
     }
 
 
-    public boolean validate(String command) {
+    public ValidationResult validate(String command) {
+        ValidationResult validationResult = new ValidationResult();
         try {
-            return validators.stream()
+            boolean isValid = validators.stream()
                     .allMatch(validator -> validator.validate(command));
+            validationResult.setValid(isValid);
         } catch (CommandFormatException e) {
-            log.error(e.getDetailMessage());
-            return false;
+            validationResult.setDetailMessage(e.getDetailMessage());
         } catch (UnexpectedCurrencyException e) {
-            log.error(e.getDetailMessage());
-            return false;
+            validationResult.setDetailMessage(e.getDetailMessage());
         } catch (UnexpectedPeriodException e) {
-            log.error(e.getDetailMessage());
-            return false;
+            validationResult.setDetailMessage(e.getDetailMessage());
+        } finally{
+            return validationResult;
         }
     }
 
