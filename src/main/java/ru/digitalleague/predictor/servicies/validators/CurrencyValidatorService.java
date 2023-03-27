@@ -1,17 +1,17 @@
 package ru.digitalleague.predictor.servicies.validators;
 
+import ru.digitalleague.predictor.entity.ValidationResult;
 import ru.digitalleague.predictor.enums.Currency;
-import ru.digitalleague.predictor.exceptions.UnexpectedCurrencyException;
 import ru.digitalleague.predictor.interfaces.Validator;
 
 public class CurrencyValidatorService implements Validator {
     @Override
-    public boolean validate(String command) throws UnexpectedCurrencyException {
+    public ValidationResult validate(String command){
         if (!validateCurrency(command)) {
-            throw new UnexpectedCurrencyException("Валюта не найдена!");
+            return new ValidationResult(false, command + " Валюта не найдена!");
         }
 
-        return true;
+        return new ValidationResult(true, "Ok!");
     }
 
     public boolean validateCurrency(String command) {

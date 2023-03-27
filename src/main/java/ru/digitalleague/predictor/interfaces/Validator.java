@@ -1,5 +1,7 @@
 package ru.digitalleague.predictor.interfaces;
 
+import ru.digitalleague.predictor.entity.ValidationResult;
+
 public interface Validator {
-    boolean validate(String command);
+    ValidationResult validate(String command);
 }

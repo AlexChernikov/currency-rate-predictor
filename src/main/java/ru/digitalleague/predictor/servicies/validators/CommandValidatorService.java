@@ -1,15 +1,15 @@
 package ru.digitalleague.predictor.servicies.validators;
 
-import ru.digitalleague.predictor.exceptions.CommandFormatException;
+import ru.digitalleague.predictor.entity.ValidationResult;
 import ru.digitalleague.predictor.interfaces.Validator;
 
 public class CommandValidatorService implements Validator {
     @Override
-    public boolean validate(String command) throws CommandFormatException {
+    public ValidationResult validate(String command) {
         if (!command.matches("rate [A-Z]{3} (.*)")) {
-            throw new CommandFormatException("Команда " + command + " не разбирается. Попробуйте ещё раз.");
+            return new ValidationResult(false, "Команда " + command + " не разбирается. Попробуйте ещё раз.");
         }
 
-        return true;
+        return new ValidationResult(true, "Ok!");
     }
 }

@@ -1,7 +1,7 @@
 package ru.digitalleague.predictor.servicies.validators;
 
+import ru.digitalleague.predictor.entity.ValidationResult;
 import ru.digitalleague.predictor.enums.Period;
-import ru.digitalleague.predictor.exceptions.UnexpectedPeriodException;
 import ru.digitalleague.predictor.interfaces.Validator;
 
 import java.util.logging.Logger;
@@ -10,12 +10,12 @@ public class PeriodValidatorService implements Validator {
 
     private static final Logger LOGGER = Logger.getLogger(PeriodValidatorService.class.getName());
     @Override
-    public boolean validate(String command) throws UnexpectedPeriodException {
+    public ValidationResult validate(String command) {
         if (!validatePeriod(command)) {
-            throw new UnexpectedPeriodException("Период не найден!");
+            return new ValidationResult(false, command + " Период не найден!");
         }
 
-        return true;
+        return new ValidationResult(true, "Ok!");
     }
 
     public boolean validatePeriod(String command) {

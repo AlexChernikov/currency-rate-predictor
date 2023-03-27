@@ -4,18 +4,20 @@ import lombok.extern.slf4j.Slf4j;
 import ru.digitalleague.predictor.entity.ValidationResult;
 import ru.digitalleague.predictor.enums.Currency;
 import ru.digitalleague.predictor.enums.Period;
-import ru.digitalleague.predictor.servicies.CommandParserService;
+import ru.digitalleague.predictor.servicies.CommandParser;
 import ru.digitalleague.predictor.servicies.CurrencyPredictorService;
 import ru.digitalleague.predictor.servicies.validators.ValidatorsFactory;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
+import java.util.function.Predicate;
 
 @Slf4j
 public class MainController {
     public void run() {
 
-        CommandParserController commandParserController = new CommandParserController(new CommandParserService(ValidatorsFactory.getAll()));
+        CommandParserController commandParserController = new CommandParserController(new CommandParser(ValidatorsFactory.getAll()));
         CurrencyPredictorController currencyPredictorController = new CurrencyPredictorController(new CurrencyPredictorService());
 
         printInfo(Currency.values(), "Список доступных для прогноза валют:");
@@ -24,9 +26,12 @@ public class MainController {
         Scanner in = new Scanner(System.in);
         String command = in.nextLine();
 
-        ValidationResult validationResult = commandParserController.validateCommand(command);
+        List<ValidationResult> validationResults = commandParserController.validateCommand(command);
 
-        if (validationResult.isValid()) {
+        boolean isValid = validationResults.stream()
+                .allMatch(ValidationResult::isValid);
+
+        if (isValid) {
             Currency currency = commandParserController.parseCurrency(command);
             Period period = commandParserController.parsePeriod(command);
 
@@ -34,7 +39,11 @@ public class MainController {
 
             log.info(currencyRatePrediction);
         } else {
-            log.warn(validationResult.getDetailMessage());
+            validationResults.stream()
+                            .filter(Predicate.not(ValidationResult::isValid))
+                                    .forEach(validationResult -> {
+                                        log.warn(validationResult.getDetailMessage());
+                                    });
         }
     }
 

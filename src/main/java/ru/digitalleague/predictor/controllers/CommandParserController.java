@@ -3,17 +3,19 @@ package ru.digitalleague.predictor.controllers;
 import ru.digitalleague.predictor.entity.ValidationResult;
 import ru.digitalleague.predictor.enums.Currency;
 import ru.digitalleague.predictor.enums.Period;
-import ru.digitalleague.predictor.servicies.CommandParserService;
+import ru.digitalleague.predictor.servicies.CommandParser;
+
+import java.util.List;
 
 public class CommandParserController {
 
-    private final CommandParserService commandParserService;
+    private final CommandParser commandParserService;
 
-    public CommandParserController(CommandParserService commandParserService) {
+    public CommandParserController(CommandParser commandParserService) {
         this.commandParserService = commandParserService;
     }
 
-    public ValidationResult validateCommand(String command) {
+    public List<ValidationResult> validateCommand(String command) {
         return commandParserService.validate(command);
     }
 
