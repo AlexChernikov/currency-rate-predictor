@@ -18,6 +18,21 @@ public class CommandParser {
         this.validators = validators;
     }
 
+    public boolean isValidCommand(String command) {
+        return validate(command).stream()
+                .allMatch(ValidationResult::isValid);
+    }
+
+    public String getDetailLogMessage(String command) {
+        StringBuilder stringBuilder = new StringBuilder();
+
+        validate(command).stream()
+                .map(ValidationResult::getDetailMessage)
+                .forEach(stringBuilder::append);
+
+        return stringBuilder.toString();
+    }
+
 
     public List<ValidationResult> validate(String command) {
         return  validators.stream()
@@ -31,7 +46,8 @@ public class CommandParser {
                 return value;
             }
         }
-        return Currency.values()[0];
+
+        throw new RuntimeException(command + " Неизвестная валюта!");
     }
 
     public Period parsePeriod(String command) {
@@ -40,6 +56,7 @@ public class CommandParser {
                 return value;
             }
         }
-        return Period.values()[0];
+
+        throw new RuntimeException(command + " Неизвестный период!");
     }
 }

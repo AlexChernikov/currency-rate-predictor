@@ -8,7 +8,7 @@ import java.math.MathContext;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class CounterWeekService implements Counter {
+public class CounterWeek implements Counter {
 
     @Override
     public List<BigDecimal> count(List<CurrencyInfo> currencyInfos) {

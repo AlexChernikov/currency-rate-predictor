@@ -8,7 +8,7 @@ import java.math.MathContext;
 import java.util.Arrays;
 import java.util.List;
 
-public class CounterTomorrowService implements Counter {
+public class CounterTomorrow implements Counter {
     @Override
     public List<BigDecimal> count(List<CurrencyInfo> currencyInfos) {
         BigDecimal sum = currencyInfos.stream()

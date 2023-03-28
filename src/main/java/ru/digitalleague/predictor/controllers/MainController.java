@@ -1,49 +1,46 @@
 package ru.digitalleague.predictor.controllers;
 
 import lombok.extern.slf4j.Slf4j;
-import ru.digitalleague.predictor.entity.ValidationResult;
 import ru.digitalleague.predictor.enums.Currency;
 import ru.digitalleague.predictor.enums.Period;
 import ru.digitalleague.predictor.servicies.CommandParser;
-import ru.digitalleague.predictor.servicies.CurrencyPredictorService;
+import ru.digitalleague.predictor.servicies.CurrencyPredictor;
+import ru.digitalleague.predictor.servicies.repository.CurrencyInfoRepository;
 import ru.digitalleague.predictor.servicies.validators.ValidatorsFactory;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Scanner;
-import java.util.function.Predicate;
 
 @Slf4j
 public class MainController {
     public void run() {
+        CommandParser commandParser = new CommandParser(ValidatorsFactory.getAll());
+        CommandParserController commandParserController = new CommandParserController(commandParser);
 
-        CommandParserController commandParserController = new CommandParserController(new CommandParser(ValidatorsFactory.getAll()));
-        CurrencyPredictorController currencyPredictorController = new CurrencyPredictorController(new CurrencyPredictorService());
+        CurrencyPredictor currencyPredictor = new CurrencyPredictor(new CurrencyInfoRepository());
+        CurrencyPredictorController currencyPredictorController = new CurrencyPredictorController(currencyPredictor);
 
         printInfo(Currency.values(), "Список доступных для прогноза валют:");
         printInfo(Period.values(), "Список доступных для прогноза периодов:");
 
-        Scanner in = new Scanner(System.in);
-        String command = in.nextLine();
 
-        List<ValidationResult> validationResults = commandParserController.validateCommand(command);
+        while (true) {
+            Scanner in = new Scanner(System.in);
+            String command = in.nextLine();
 
-        boolean isValid = validationResults.stream()
-                .allMatch(ValidationResult::isValid);
+            boolean isValid = commandParserController.isValidCommand(command);
 
-        if (isValid) {
-            Currency currency = commandParserController.parseCurrency(command);
-            Period period = commandParserController.parsePeriod(command);
+            if (isValid) {
+                Currency currency = commandParserController.parseCurrency(command);
+                Period period = commandParserController.parsePeriod(command);
 
-            String currencyRatePrediction = currencyPredictorController.predicate(currency, period);
+                String currencyRatePrediction = currencyPredictorController.predicate(currency, period);
 
-            log.info(currencyRatePrediction);
-        } else {
-            validationResults.stream()
-                            .filter(Predicate.not(ValidationResult::isValid))
-                                    .forEach(validationResult -> {
-                                        log.warn(validationResult.getDetailMessage());
-                                    });
+                log.info(currencyRatePrediction);
+            } else {
+                String detailMessage = commandParserController.getDetailLogMessage(command);
+                log.warn(detailMessage);
+            }
         }
     }
 

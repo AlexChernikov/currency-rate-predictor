@@ -2,9 +2,9 @@ package ru.digitalleague.predictor.controllers;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import ru.digitalleague.predictor.entity.ValidationResult;
 import ru.digitalleague.predictor.servicies.CommandParser;
-import ru.digitalleague.predictor.servicies.CurrencyPredictorService;
+import ru.digitalleague.predictor.servicies.CurrencyPredictor;
+import ru.digitalleague.predictor.servicies.repository.CurrencyInfoRepository;
 import ru.digitalleague.predictor.servicies.validators.ValidatorsFactory;
 
 import java.util.Arrays;
@@ -15,11 +15,14 @@ class CurrencyPredictorControllerTest {
     @Test
     void correctDataTest() {
         List<String> data = Arrays.asList("rate TRY tomorrow", "rate USD week");
-        CommandParserController commandParserController = new CommandParserController(new CommandParser(ValidatorsFactory.getAll()));
-        CurrencyPredictorController currencyPredictorController = new CurrencyPredictorController(new CurrencyPredictorService());
+        CommandParser commandParser = new CommandParser(ValidatorsFactory.getAll());
+        CommandParserController commandParserController = new CommandParserController(commandParser);
+
+        CurrencyPredictor currencyPredictor = new CurrencyPredictor(new CurrencyInfoRepository());
+        CurrencyPredictorController currencyPredictorController = new CurrencyPredictorController(currencyPredictor);
 
         data.stream()
-                .filter(command -> commandParserController.validateCommand(command).stream().allMatch(ValidationResult::isValid))
+                .filter(command -> commandParserController.isValidCommand(command))
                 .map(d -> currencyPredictorController.predicate(commandParserController.parseCurrency(d), commandParserController.parsePeriod(d)))
                 .forEach(Assertions::assertNotNull);
     }
@@ -27,11 +30,14 @@ class CurrencyPredictorControllerTest {
     @Test
     void badDataTest() {
         List<String> data = Arrays.asList("rate TRY", "USD week");
-        CommandParserController commandParserController = new CommandParserController(new CommandParser(ValidatorsFactory.getAll()));
-        CurrencyPredictorController currencyPredictorController = new CurrencyPredictorController(new CurrencyPredictorService());
+        CommandParser commandParser = new CommandParser(ValidatorsFactory.getAll());
+        CommandParserController commandParserController = new CommandParserController(commandParser);
+
+        CurrencyPredictor currencyPredictor = new CurrencyPredictor(new CurrencyInfoRepository());
+        CurrencyPredictorController currencyPredictorController = new CurrencyPredictorController(currencyPredictor);
 
         data.stream()
-                .filter(command -> commandParserController.validateCommand(command).stream().allMatch(ValidationResult::isValid))
+                .filter(command -> commandParserController.isValidCommand(command))
                 .map(d -> currencyPredictorController.predicate(commandParserController.parseCurrency(d), commandParserController.parsePeriod(d)))
                 .forEach(Assertions::assertNull);
     }
@@ -39,11 +45,14 @@ class CurrencyPredictorControllerTest {
     @Test
     void badCurrencyTest() {
         List<String> data = Arrays.asList("rate TTT tomorrow", "rate UUU week");
-        CommandParserController commandParserController = new CommandParserController(new CommandParser(ValidatorsFactory.getAll()));
-        CurrencyPredictorController currencyPredictorController = new CurrencyPredictorController(new CurrencyPredictorService());
+        CommandParser commandParser = new CommandParser(ValidatorsFactory.getAll());
+        CommandParserController commandParserController = new CommandParserController(commandParser);
+
+        CurrencyPredictor currencyPredictor = new CurrencyPredictor(new CurrencyInfoRepository());
+        CurrencyPredictorController currencyPredictorController = new CurrencyPredictorController(currencyPredictor);
 
         data.stream()
-                .filter(command -> commandParserController.validateCommand(command).stream().allMatch(ValidationResult::isValid))
+                .filter(command -> commandParserController.isValidCommand(command))
                 .map(d -> currencyPredictorController.predicate(commandParserController.parseCurrency(d), commandParserController.parsePeriod(d)))
                 .forEach(Assertions::assertNull);
     }
@@ -51,11 +60,14 @@ class CurrencyPredictorControllerTest {
     @Test
     void badPeriodTest() {
         List<String> data = Arrays.asList("rate TRY yesterday", "rate USD month");
-        CommandParserController commandParserController = new CommandParserController(new CommandParser(ValidatorsFactory.getAll()));
-        CurrencyPredictorController currencyPredictorController = new CurrencyPredictorController(new CurrencyPredictorService());
+        CommandParser commandParser = new CommandParser(ValidatorsFactory.getAll());
+        CommandParserController commandParserController = new CommandParserController(commandParser);
+
+        CurrencyPredictor currencyPredictor = new CurrencyPredictor(new CurrencyInfoRepository());
+        CurrencyPredictorController currencyPredictorController = new CurrencyPredictorController(currencyPredictor);
 
         data.stream()
-                .filter(command -> commandParserController.validateCommand(command).stream().allMatch(ValidationResult::isValid))
+                .filter(command -> commandParserController.isValidCommand(command))
                 .map(d -> currencyPredictorController.predicate(commandParserController.parseCurrency(d), commandParserController.parsePeriod(d)))
                 .forEach(Assertions::assertNull);
     }

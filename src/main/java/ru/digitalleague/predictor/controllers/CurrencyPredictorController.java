@@ -2,13 +2,13 @@ package ru.digitalleague.predictor.controllers;
 
 import ru.digitalleague.predictor.enums.Currency;
 import ru.digitalleague.predictor.enums.Period;
-import ru.digitalleague.predictor.servicies.CurrencyPredictorService;
+import ru.digitalleague.predictor.servicies.CurrencyPredictor;
 
 public class CurrencyPredictorController {
 
-    private final CurrencyPredictorService currencyPredictorService;
+    private final CurrencyPredictor currencyPredictorService;
 
-    public CurrencyPredictorController(CurrencyPredictorService currencyPredictorService) {
+    public CurrencyPredictorController(CurrencyPredictor currencyPredictorService) {
         this.currencyPredictorService = currencyPredictorService;
     }
 

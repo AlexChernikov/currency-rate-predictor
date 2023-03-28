@@ -1,11 +1,8 @@
 package ru.digitalleague.predictor.controllers;
 
-import ru.digitalleague.predictor.entity.ValidationResult;
 import ru.digitalleague.predictor.enums.Currency;
 import ru.digitalleague.predictor.enums.Period;
 import ru.digitalleague.predictor.servicies.CommandParser;
-
-import java.util.List;
 
 public class CommandParserController {
 
@@ -15,8 +12,12 @@ public class CommandParserController {
         this.commandParserService = commandParserService;
     }
 
-    public List<ValidationResult> validateCommand(String command) {
-        return commandParserService.validate(command);
+    public boolean isValidCommand(String command) {
+        return commandParserService.isValidCommand(command);
+    }
+
+    public String getDetailLogMessage(String command) {
+        return commandParserService.getDetailLogMessage(command);
     }
 
     public Currency parseCurrency(String command) {
@@ -26,5 +27,4 @@ public class CommandParserController {
     public Period parsePeriod(String command) {
         return commandParserService.parsePeriod(command);
     }
-
 }
