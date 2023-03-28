@@ -21,7 +21,7 @@ public class CommandParser {
 
     public List<ValidationResult> validate(String command) {
         return  validators.stream()
-                .map(validator -> validator.validate(command))
+                .map(validator -> validator.isValid(command))
                 .collect(Collectors.toList());
     }
 

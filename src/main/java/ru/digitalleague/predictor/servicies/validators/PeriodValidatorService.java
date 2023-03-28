@@ -10,7 +10,7 @@ public class PeriodValidatorService implements Validator {
 
     private static final Logger LOGGER = Logger.getLogger(PeriodValidatorService.class.getName());
     @Override
-    public ValidationResult validate(String command) {
+    public ValidationResult isValid(String command) {
         if (!validatePeriod(command)) {
             return new ValidationResult(false, command + " Период не найден!");
         }

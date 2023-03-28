@@ -6,7 +6,7 @@ import ru.digitalleague.predictor.interfaces.Validator;
 
 public class CurrencyValidatorService implements Validator {
     @Override
-    public ValidationResult validate(String command){
+    public ValidationResult isValid(String command){
         if (!validateCurrency(command)) {
             return new ValidationResult(false, command + " Валюта не найдена!");
         }
