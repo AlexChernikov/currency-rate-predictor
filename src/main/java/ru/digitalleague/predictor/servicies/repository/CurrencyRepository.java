@@ -16,7 +16,6 @@ public class CurrencyRepository {
     private static final String USD_FILE_NAME = "csv/USD.csv";
 
 
-
     public List<CurrencyInfo> getCurrencyInfoByCurrency(Currency currency) {
         String fileName = getFileNameByCurrency(currency);
         InputStream resourceAsStream = CurrencyRepository.class.getClassLoader().getResourceAsStream(fileName);
@@ -33,19 +32,15 @@ public class CurrencyRepository {
 
 
     private String getFileNameByCurrency(Currency currency) {
-        if (currency != null) {
-            switch (currency) {
-                case EUR:
-                    return EUR_FILE_NAME;
-                case TRY:
-                    return TRY_FILE_NAME;
-                case USD:
-                    return USD_FILE_NAME;
-                default:
-                    return null;
-            }
+        switch (currency) {
+            case EUR:
+                return EUR_FILE_NAME;
+            case TRY:
+                return TRY_FILE_NAME;
+            case USD:
+                return USD_FILE_NAME;
+            default:
+                return null;
         }
-
-        return null;
     }
 }

@@ -31,7 +31,7 @@ public class CommandParser {
                 return value;
             }
         }
-        return null;
+        return Currency.values()[0];
     }
 
     public Period parsePeriod(String command) {
@@ -40,6 +40,6 @@ public class CommandParser {
                 return value;
             }
         }
-        return null;
+        return Period.values()[0];
     }
 }
