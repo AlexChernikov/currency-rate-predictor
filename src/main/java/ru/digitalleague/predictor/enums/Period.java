@@ -1,18 +1,24 @@
 package ru.digitalleague.predictor.enums;
 
-import ru.digitalleague.predictor.interfaces.Counter;
-import ru.digitalleague.predictor.servicies.counters.CounterTomorrow;
-import ru.digitalleague.predictor.servicies.counters.CounterWeek;
-
 public enum Period {
     TOMORROW {
-        public Counter getCounter() {
-            return new CounterTomorrow();
+        public int getCount() {
+            return 1;
         }
     },
     WEEK {
-        public Counter getCounter() {
-            return new CounterWeek();
+        public int getCount() {
+            return 7;
+        }
+    },
+    MONTH {
+        public int getCount() {
+            return 30;
+        }
+    },
+    YEAR {
+        public int getCount() {
+            return 365;
         }
     };
 
@@ -21,7 +27,7 @@ public enum Period {
         return name().toLowerCase();
     }
 
-    public Counter getCounter() {
-        return this.getCounter();
+    public int getCount() {
+        return this.getCount();
     }
 }

@@ -1,14 +1,17 @@
 package ru.digitalleague.predictor.servicies.validators;
 
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 import ru.digitalleague.predictor.entity.ValidationResult;
 import ru.digitalleague.predictor.enums.Period;
+import ru.digitalleague.predictor.interfaces.TelegramValidator;
 import ru.digitalleague.predictor.interfaces.Validator;
 
-import java.util.logging.Logger;
+import java.util.List;
 
-public class PeriodValidatorService implements Validator {
-
-    private static final Logger LOGGER = Logger.getLogger(PeriodValidatorService.class.getName());
+@Slf4j
+@Service
+public class PeriodValidatorService implements Validator, TelegramValidator {
     @Override
     public ValidationResult isValid(String command) {
         if (!validatePeriod(command)) {
@@ -16,6 +19,17 @@ public class PeriodValidatorService implements Validator {
         }
 
         return new ValidationResult(true, "Ok!");
+    }
+
+    @Override
+    public boolean IsAnInstance(String command) {
+        log.info("Period Validator Service check command");
+        try {
+            return List.of(Period.values()).contains(Period.valueOf(command));
+        } catch (IllegalArgumentException e) {
+            log.warn("Cant parse currency: " + e.getMessage());
+            return false;
+        }
     }
 
     public boolean validatePeriod(String command) {
