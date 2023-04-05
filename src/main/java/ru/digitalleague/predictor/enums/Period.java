@@ -1,7 +1,7 @@
 package ru.digitalleague.predictor.enums;
 
 public enum Period {
-    TOMORROW {
+    DAY {
         public int getCount() {
             return 1;
         }
