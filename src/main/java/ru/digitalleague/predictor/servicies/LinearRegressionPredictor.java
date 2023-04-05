@@ -27,7 +27,8 @@ public class LinearRegressionPredictor implements Predictor {
 
         for (Currency currency : currencies) {
             List<CurrencyInfo> currencyInfos = currencyInfoRepository.getCurrencyInfoByCurrency(currency);
-            List<BigDecimal> currencyRatePrediction = this.getPredicate(currencyInfos, period);
+            LocalDateTime lcd = localDateTime;
+            List<BigDecimal> currencyRatePrediction = this.getPredicate(currencyInfos, period, lcd);
             currencyAndCounts.put(currency, currencyRatePrediction);
         }
 
@@ -37,24 +38,25 @@ public class LinearRegressionPredictor implements Predictor {
         return predicate;
     }
 
-    private List<BigDecimal> getPredicate(List<CurrencyInfo> currencyInfos, Period period) {
-        List<BigDecimal> counts = count(currencyInfos.subList(0, period.getCount()));
+    private List<BigDecimal> getPredicate(List<CurrencyInfo> currencyInfos, Period period, LocalDateTime localDateTime) {
+        List<BigDecimal> counts = count(currencyInfos.subList(0, period.getCount()), localDateTime);
 
         return counts;
     }
 
-    public List<BigDecimal> count(List<CurrencyInfo> currencyInfos) {
+    public List<BigDecimal> count(List<CurrencyInfo> currencyInfos, LocalDateTime localDateTime) {
         List<BigDecimal> currencies = new ArrayList<>();
         for (int i = 0; i < currencyInfos.size(); i++) {
             CurrencyInfo currencyInfo = currencyInfos.get(0);
             currencies.add(currencyInfo.curs.multiply(currencyInfo.nominal));
-            currencyInfos = countRecurse(currencyInfos);
+            currencyInfos = countRecurse(currencyInfos, localDateTime);
+            localDateTime.plusDays(1);
         }
 
         return currencies;
     }
 
-    private List<CurrencyInfo> countRecurse(List<CurrencyInfo> currencyInfos) {
+    private List<CurrencyInfo> countRecurse(List<CurrencyInfo> currencyInfos, LocalDateTime localDateTime) {
         double[] currencies = currencyInfos.stream()
                 .map(currencyInfo -> currencyInfo.curs.multiply(currencyInfo.nominal).toBigInteger().doubleValue())
                 .mapToDouble(Double::doubleValue)
@@ -66,10 +68,10 @@ public class LinearRegressionPredictor implements Predictor {
                 .toArray();
 
         LinearRegression linearRegression = new LinearRegression(days, currencies);
-        BigDecimal result = BigDecimal.valueOf(linearRegression.predict(days[0] + 1));
+        BigDecimal result = BigDecimal.valueOf(linearRegression.predict(localDateTime.getDayOfMonth()));
 
         CurrencyInfo currencyInfo = new CurrencyInfo();
-        currencyInfo.data = String.valueOf(days[0]+1);
+        currencyInfo.data = String.valueOf(localDateTime);
         currencyInfo.curs = result;
         currencyInfo.nominal = BigDecimal.valueOf(1);
 
