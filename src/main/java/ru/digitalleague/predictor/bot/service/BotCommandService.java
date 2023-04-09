@@ -112,13 +112,14 @@ public class BotCommandService {
     }
 
     public SendResponse getSendMessageByParams(String messageText) {
-        log.info("Parse message text");
+        log.info("Parse message text {}", messageText);
         SendMessage sendMessage = new SendMessage();
 
         if (currencyValidatorService.IsAnInstance(messageText)) {
             currencies.add(Currency.valueOf(messageText));
             sendMessage.setText("Валюта добавлена! Выберите ещё или перейдите к выбору периода!");
             sendMessage.setReplyMarkup(setCurrencyValues());
+            return new SendResponse(sendMessage, null);
         } else if (SELECT_PERIOD.equals(messageText)) {
             if (currencies.isEmpty()) {
                 sendMessage.setText("Вы не выбрали ни одной валюты!");
@@ -126,29 +127,36 @@ public class BotCommandService {
                 sendMessage.setText("Выберите период!");
                 sendMessage.setReplyMarkup(setPeriodValues());
             }
+            return new SendResponse(sendMessage, null);
         } else if (periodValidatorService.IsAnInstance(messageText)) {
             period = Period.valueOf(messageText);
             sendMessage.setText("Период выбран! Выберете метод!");
             sendMessage.setReplyMarkup(setMethodValues());
-        } if (SELECT_CURRENCY.equals(messageText)) {
+            return new SendResponse(sendMessage, null);
+        } else if (SELECT_CURRENCY.equals(messageText)) {
             sendMessage.setText("Выберите валюту или перейдите к выбору периода!");
             sendMessage.setReplyMarkup(setCurrencyValues());
+            return new SendResponse(sendMessage, null);
         } else if (methodValidatorService.IsAnInstance(messageText)) {
             method = Method.valueOf(messageText);
             sendMessage.setText("Метод выбран! Выберите тип представления!");
             sendMessage.setReplyMarkup(setFormatValues());
+            return new SendResponse(sendMessage, null);
         } else if (formatValidatorService.IsAnInstance(messageText)) {
             format = Format.valueOf(messageText);
             sendMessage.setText("Формат выбран! Введите дату в формате \"DD.MM.YYYY\"!");
+            return new SendResponse(sendMessage, null);
         } else if (SELECT_METHOD.equals(messageText)) {
             sendMessage.setText("Выберите метод или перейдите к выбору формата!");
             sendMessage.setReplyMarkup(setMethodValues());
+            return new SendResponse(sendMessage, null);
         } else if (FINISH_RATE.equals(messageText)) {
             sendMessage = getSendMessageByCommand("/rate");
+            return new SendResponse(sendMessage, null);
         }
         try {
-            DateTimeFormatter DATEFORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            LocalDate localDate = LocalDate.parse(messageText, DATEFORMATTER);
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+            LocalDate localDate = LocalDate.parse(messageText, dateTimeFormatter);
             localDateTime = LocalDateTime.of(localDate, LocalDateTime.now().toLocalTime());
             sendMessage.setText("Дата успешно введена!");
             log.info("Parse message finished");
@@ -158,6 +166,7 @@ public class BotCommandService {
         }
         log.info("Parse message finished");
 
+        sendMessage.setText("Введены некорректные данные!");
         return new SendResponse(sendMessage, null);
     }
 
