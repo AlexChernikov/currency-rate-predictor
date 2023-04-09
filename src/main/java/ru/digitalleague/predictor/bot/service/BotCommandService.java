@@ -119,7 +119,7 @@ public class BotCommandService {
             currencies.add(Currency.valueOf(messageText.toUpperCase()));
             sendMessage.setText("Валюта добавлена! Выберите ещё или перейдите к выбору периода!");
             sendMessage.setReplyMarkup(setCurrencyValues());
-            return new SendResponse(sendMessage, null);
+            return new SendResponse(sendMessage);
         } else if (SELECT_PERIOD.equals(messageText)) {
             if (currencies.isEmpty()) {
                 sendMessage.setText("Вы не выбрали ни одной валюты!");
@@ -127,32 +127,32 @@ public class BotCommandService {
                 sendMessage.setText("Выберите период!");
                 sendMessage.setReplyMarkup(setPeriodValues());
             }
-            return new SendResponse(sendMessage, null);
+            return new SendResponse(sendMessage);
         } else if (periodValidatorService.IsAnInstance(messageText.toUpperCase()) && !currencies.isEmpty()) {
             period = Period.valueOf(messageText.toUpperCase());
             sendMessage.setText("Период выбран! Выберете метод!");
             sendMessage.setReplyMarkup(setMethodValues());
-            return new SendResponse(sendMessage, null);
+            return new SendResponse(sendMessage);
         } else if (SELECT_CURRENCY.equals(messageText)) {
             sendMessage.setText("Выберите валюту или перейдите к выбору периода!");
             sendMessage.setReplyMarkup(setCurrencyValues());
-            return new SendResponse(sendMessage, null);
+            return new SendResponse(sendMessage);
         } else if (methodValidatorService.IsAnInstance(messageText.toUpperCase()) && period != null) {
             method = Method.valueOf(messageText.toUpperCase());
             sendMessage.setText("Метод выбран! Выберите тип представления!");
             sendMessage.setReplyMarkup(setFormatValues());
-            return new SendResponse(sendMessage, null);
+            return new SendResponse(sendMessage);
         } else if (formatValidatorService.IsAnInstance(messageText.toUpperCase()) && method != null) {
             format = Format.valueOf(messageText.toUpperCase());
             sendMessage.setText("Формат выбран! Введите дату в формате \"DD.MM.YYYY\"!");
-            return new SendResponse(sendMessage, null);
+            return new SendResponse(sendMessage);
         } else if (SELECT_METHOD.equals(messageText)) {
             sendMessage.setText("Выберите метод или перейдите к выбору формата!");
             sendMessage.setReplyMarkup(setMethodValues());
-            return new SendResponse(sendMessage, null);
+            return new SendResponse(sendMessage);
         } else if (FINISH_RATE.equals(messageText)) {
             sendMessage = getSendMessageByCommand("/rate");
-            return new SendResponse(sendMessage, null);
+            return new SendResponse(sendMessage);
         }
         if (!currencies.isEmpty() && method != null && period != null && format != null) {
             try {
@@ -169,7 +169,7 @@ public class BotCommandService {
         log.info("Parse message finished");
 
         sendMessage.setText("Введены некорректные данные!");
-        return new SendResponse(sendMessage, null);
+        return new SendResponse(sendMessage);
     }
 
     private SendResponse prepareMessageAndPhoto(SendMessage sendMessage) {
@@ -177,7 +177,7 @@ public class BotCommandService {
         sendMessage.setText(prediction.getTextPrediction());
 
         if (prediction.getImagePrediction() == null) {
-            return new SendResponse(sendMessage, null);
+            return new SendResponse(sendMessage);
         }
 
         BufferedImage objBufferedImage = prediction.getImagePrediction();

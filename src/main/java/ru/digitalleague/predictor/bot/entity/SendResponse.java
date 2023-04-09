@@ -9,11 +9,16 @@ public class SendResponse {
     private SendMessage sendMessage;
     private SendPhoto sendPhoto;
 
-    public SendResponse() {
-    }
-
     public SendResponse(SendMessage sendMessage, SendPhoto sendPhoto) {
         this.sendMessage = sendMessage;
+        this.sendPhoto = sendPhoto;
+    }
+
+    public SendResponse(SendMessage sendMessage) {
+        this.sendMessage = sendMessage;
+    }
+
+    public SendResponse(SendPhoto sendPhoto) {
         this.sendPhoto = sendPhoto;
     }
 }
