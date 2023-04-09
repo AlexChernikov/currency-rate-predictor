@@ -128,7 +128,7 @@ public class BotCommandService {
                 sendMessage.setReplyMarkup(setPeriodValues());
             }
             return new SendResponse(sendMessage, null);
-        } else if (periodValidatorService.IsAnInstance(messageText.toUpperCase())) {
+        } else if (periodValidatorService.IsAnInstance(messageText.toUpperCase()) && !currencies.isEmpty()) {
             period = Period.valueOf(messageText.toUpperCase());
             sendMessage.setText("Период выбран! Выберете метод!");
             sendMessage.setReplyMarkup(setMethodValues());
@@ -137,12 +137,12 @@ public class BotCommandService {
             sendMessage.setText("Выберите валюту или перейдите к выбору периода!");
             sendMessage.setReplyMarkup(setCurrencyValues());
             return new SendResponse(sendMessage, null);
-        } else if (methodValidatorService.IsAnInstance(messageText.toUpperCase())) {
+        } else if (methodValidatorService.IsAnInstance(messageText.toUpperCase()) && period != null) {
             method = Method.valueOf(messageText.toUpperCase());
             sendMessage.setText("Метод выбран! Выберите тип представления!");
             sendMessage.setReplyMarkup(setFormatValues());
             return new SendResponse(sendMessage, null);
-        } else if (formatValidatorService.IsAnInstance(messageText.toUpperCase())) {
+        } else if (formatValidatorService.IsAnInstance(messageText.toUpperCase()) && method != null) {
             format = Format.valueOf(messageText.toUpperCase());
             sendMessage.setText("Формат выбран! Введите дату в формате \"DD.MM.YYYY\"!");
             return new SendResponse(sendMessage, null);
@@ -154,15 +154,17 @@ public class BotCommandService {
             sendMessage = getSendMessageByCommand("/rate");
             return new SendResponse(sendMessage, null);
         }
-        try {
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-            LocalDate localDate = LocalDate.parse(messageText, dateTimeFormatter);
-            localDateTime = LocalDateTime.of(localDate, LocalDateTime.now().toLocalTime());
-            sendMessage.setText("Дата успешно введена!");
-            log.info("Parse message finished");
-            return prepareMessageAndPhoto(sendMessage);
-        } catch (RuntimeException e) {
-            log.warn(e.getMessage());
+        if (!currencies.isEmpty() && method != null && period != null && format != null) {
+            try {
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+                LocalDate localDate = LocalDate.parse(messageText, dateTimeFormatter);
+                localDateTime = LocalDateTime.of(localDate, LocalDateTime.now().toLocalTime());
+                sendMessage.setText("Дата успешно введена!");
+                log.info("Parse message finished");
+                return prepareMessageAndPhoto(sendMessage);
+            } catch (RuntimeException e) {
+                log.warn(e.getMessage());
+            }
         }
         log.info("Parse message finished");
 
