@@ -1,11 +1,11 @@
 package ru.digitalleague.predictor.servicies.repository;
 
 import com.opencsv.bean.CsvToBeanBuilder;
-import javassist.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 import ru.digitalleague.predictor.entity.CurrencyInfo;
 import ru.digitalleague.predictor.enums.Currency;
+import ru.digitalleague.predictor.exceptions.CurrencyFileNotFoundException;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -22,13 +22,8 @@ public class CurrencyInfoRepository {
     private static final String AMD_FILE_NAME = "csv/AMD.csv";
 
     public List<CurrencyInfo> getCurrencyInfoByCurrency(Currency currency) {
-        String fileName = null;
-        try {
-            fileName = getFileNameByCurrency(currency);
-        } catch (NotFoundException e) {
-            log.error(e.getMessage());
-            throw new RuntimeException(e);
-        }
+        String fileName = getFileNameByCurrency(currency);
+
         InputStream resourceAsStream = CurrencyInfoRepository.class.getClassLoader().getResourceAsStream(fileName);
         InputStreamReader inputStreamReader = new InputStreamReader(resourceAsStream);
         BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
@@ -41,7 +36,7 @@ public class CurrencyInfoRepository {
         return currencyInfos;
     }
 
-    private String getFileNameByCurrency(Currency currency) throws NotFoundException {
+    private String getFileNameByCurrency(Currency currency) {
         switch (currency) {
             case EUR:
                 return EUR_FILE_NAME;
@@ -53,8 +48,10 @@ public class CurrencyInfoRepository {
                 return BGN_FILE_NAME;
             case AMD:
                 return AMD_FILE_NAME;
-            default:
-                throw new NotFoundException("File not found!");
+            default: {
+                log.error("File not found!");
+                throw new CurrencyFileNotFoundException("File not found!");
+            }
         }
     }
 }
