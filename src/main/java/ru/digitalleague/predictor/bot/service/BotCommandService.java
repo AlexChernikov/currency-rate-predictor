@@ -115,8 +115,8 @@ public class BotCommandService {
         log.info("Parse message text {}", messageText);
         SendMessage sendMessage = new SendMessage();
 
-        if (currencyValidatorService.IsAnInstance(messageText)) {
-            currencies.add(Currency.valueOf(messageText));
+        if (currencyValidatorService.IsAnInstance(messageText.toUpperCase())) {
+            currencies.add(Currency.valueOf(messageText.toUpperCase()));
             sendMessage.setText("Валюта добавлена! Выберите ещё или перейдите к выбору периода!");
             sendMessage.setReplyMarkup(setCurrencyValues());
             return new SendResponse(sendMessage, null);
@@ -128,8 +128,8 @@ public class BotCommandService {
                 sendMessage.setReplyMarkup(setPeriodValues());
             }
             return new SendResponse(sendMessage, null);
-        } else if (periodValidatorService.IsAnInstance(messageText)) {
-            period = Period.valueOf(messageText);
+        } else if (periodValidatorService.IsAnInstance(messageText.toUpperCase())) {
+            period = Period.valueOf(messageText.toUpperCase());
             sendMessage.setText("Период выбран! Выберете метод!");
             sendMessage.setReplyMarkup(setMethodValues());
             return new SendResponse(sendMessage, null);
@@ -137,13 +137,13 @@ public class BotCommandService {
             sendMessage.setText("Выберите валюту или перейдите к выбору периода!");
             sendMessage.setReplyMarkup(setCurrencyValues());
             return new SendResponse(sendMessage, null);
-        } else if (methodValidatorService.IsAnInstance(messageText)) {
-            method = Method.valueOf(messageText);
+        } else if (methodValidatorService.IsAnInstance(messageText.toUpperCase())) {
+            method = Method.valueOf(messageText.toUpperCase());
             sendMessage.setText("Метод выбран! Выберите тип представления!");
             sendMessage.setReplyMarkup(setFormatValues());
             return new SendResponse(sendMessage, null);
-        } else if (formatValidatorService.IsAnInstance(messageText)) {
-            format = Format.valueOf(messageText);
+        } else if (formatValidatorService.IsAnInstance(messageText.toUpperCase())) {
+            format = Format.valueOf(messageText.toUpperCase());
             sendMessage.setText("Формат выбран! Введите дату в формате \"DD.MM.YYYY\"!");
             return new SendResponse(sendMessage, null);
         } else if (SELECT_METHOD.equals(messageText)) {
