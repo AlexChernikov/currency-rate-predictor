@@ -1,0 +1,3 @@
+FROM openjdk:17
+ADD out/artifacts/currency_rate_predictor_jar/currency-rate-predictor.jar currency-rate-predictor.jar
+ENTRYPOINT ["java","-jar","currency-rate-predictor.jar"]
